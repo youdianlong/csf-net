@@ -327,9 +327,9 @@ class densecat_cat_diff(nn.Module):
         out = self.conv_out(torch.abs(x1 + x2 + x3 - y1 - y2 - y3))
         return out
 
-class DF_Module(nn.Module):
+class SF_Module(nn.Module):
     def __init__(self, dim_in, dim_out, reduction=True):
-        super(DF_Module, self).__init__()
+        super(SF_Module, self).__init__()
         if reduction:
             self.reduction = torch.nn.Sequential(
                 torch.nn.Conv3d(dim_in, dim_in // 2, kernel_size=1, padding=0),
@@ -669,7 +669,7 @@ class ours_net_3d(nn.Module):
         self.decoder1 = Decoder(n_channels, n_classes, n_filters, normalization, has_dropout, has_residual, 0)
         self.decoder2 = Decoder(n_channels, n_classes, n_filters, normalization, has_dropout, has_residual, 1)
         self.decoder3 = Decoder(n_channels, n_classes, n_filters, normalization, has_dropout, has_residual, 2)
-        self.DF_Module = DF_Module(n_classes, n_classes, True).cuda()
+        self.SF_Module = SF_Module(n_classes, n_classes, True).cuda()
         self.sideconv1 = SideConv(n_classes=n_classes)
 
     def forward(self, input):
@@ -678,7 +678,7 @@ class ours_net_3d(nn.Module):
         # output2, self_simi_map2, other_simi_map2, entropy_weight2, stage_feat2 = self.decoder2(features1)
         output1 = self.decoder1(features1)
         output2 = self.decoder2(features1)
-        shape_ori = self.DF_Module(output1, output2)
+        shape_ori = self.SF_Module(output1, output2)
         shape = F.softmax(shape_ori, dim=1)
         # deep_out1 = self.sideconv1(stage_feat1)
         shape_input = torch.cat((input, shape), dim=1)

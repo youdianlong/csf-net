@@ -311,9 +311,9 @@ class densecat_cat_diff(nn.Module):
         return out
 
 
-class DF_Module(nn.Module):
+class SF_Module(nn.Module):
     def __init__(self, dim_in, dim_out, reduction=True):
-        super(DF_Module, self).__init__()
+        super(SF_Module, self).__init__()
         if reduction:
             self.reduction = torch.nn.Sequential(
                 torch.nn.Conv2d(dim_in, dim_in // 2, kernel_size=1, padding=0),
@@ -628,7 +628,7 @@ class MCNet2d_v2(nn.Module):
 #         self.decoder1 = Decoder(params1)
 #         self.decoder2 = Decoder(params2)
 #         self.decoder3 = Decoder(params3)
-#         self.DF_Module = DF_Module(4, 4, True).cuda()
+#         self.SF_Module = SF_Module(4, 4, True).cuda()
 #         self.sideconv1 = SideConv()
 #
 #     #
@@ -636,7 +636,7 @@ class MCNet2d_v2(nn.Module):
 #         feature1 = self.encoder1(x)
 #         output1, stage_feat1 = self.decoder1(feature1)
 #         output2, stage_feat2 = self.decoder2(feature1)
-#         shape_ori = self.DF_Module(output1, output2)
+#         shape_ori = self.SF_Module(output1, output2)
 #         shape = F.softmax(shape_ori, dim=1)
 #         deep_out1 = self.sideconv1(stage_feat1)
 #         # deep_out2 = self.sideconv1(stage_feat2)
@@ -692,7 +692,7 @@ class ours_net(nn.Module):
         self.decoder1 = Decoder_pro(params1)
         self.decoder2 = Decoder_pro(params2)
         self.decoder3 = Decoder_pro(params3)
-        self.DF_Module = DF_Module(class_num, class_num, True).cuda()
+        self.SF_Module = SF_Module(class_num, class_num, True).cuda()
         self.sideconv1 = SideConv(n_classes=class_num)
 
     #
@@ -703,8 +703,8 @@ class ours_net(nn.Module):
         # output1, stage_feat1 = self.decoder1(feature1)
         # output2, stage_feat2 = self.decoder2(feature1)
         # ##########################################################
-        shape_ori = self.DF_Module(output1, output2)
-        # shape_ori = self.DF_Module(output1, output2)
+        shape_ori = self.SF_Module(output1, output2)
+        # shape_ori = self.SF_Module(output1, output2)
         # shape = F.softmax(output1, dim=1)
         shape = F.softmax(shape_ori, dim=1)
         deep_out1 = self.sideconv1(stage_feat1)
