@@ -166,14 +166,6 @@ if __name__ == "__main__":
                     y_prob = F.softmax(y, dim=1)
                     loss_seg += F.cross_entropy(y[:labeled_bs], label_batch[:labeled_bs])
                     loss_seg_dice += args.beta * dice_loss(y_prob[:,1,...], label_batch[:labeled_bs,...] == 1)
-                if (idx == 4):
-                    length = len(outputs[idx])
-                    los_weight = torch.tensor([0.8, 0.6, 0.4, 0.2], dtype=torch.float32).cuda()
-                    for i in range(length):
-                        y = outputs[idx][i][:labeled_bs, ...]
-                        y_prob = F.softmax(y, dim=1)
-                        loss_seg += F.cross_entropy(y, label_batch[:labeled_bs]) * los_weight[i]
-                        loss_seg_dice += dice_loss(y_prob[:,1,...], label_batch[:labeled_bs,...] == 1) * los_weight[i]
             loss_consist = 0
             for i in range(3):
                 for j in range(3):

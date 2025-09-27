@@ -164,16 +164,6 @@ def train(args, snapshot_path):
                     y_prob = F.softmax(y, dim=1)
                     loss_seg += ce_loss(y, label_batch[:labeled_bs][:].long())
                     loss_seg_dice += args.beta * dice_loss(y_prob, label_batch[:labeled_bs].unsqueeze(1))
-                if (idx == 4):
-                ###########################################
-                # if (idx == 3):
-                    length = len(outputs[idx])
-                    los_weight = torch.tensor([0.8, 0.6, 0.4, 0.2], dtype=torch.float32).cuda()
-                    for i in range(length):
-                        y = outputs[idx][i][:labeled_bs, ...]
-                        y_prob = F.softmax(y, dim=1)
-                        loss_seg += ce_loss(y, label_batch[:labeled_bs][:].long()) * los_weight[i]
-                        loss_seg_dice += dice_loss(y_prob, label_batch[:labeled_bs].unsqueeze(1)) * los_weight[i]
             loss_consist = 0
             for i in range(3):
                 for j in range(3):
